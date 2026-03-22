@@ -21,12 +21,7 @@ interface PasteCourseModalProps {
   onCreated: (course: Course) => void;
 }
 
-export function PasteCourseModal({
-  isOpen,
-  onClose,
-  userId,
-  onCreated,
-}: PasteCourseModalProps) {
+export function PasteCourseModal({ isOpen, onClose, userId, onCreated }: PasteCourseModalProps) {
   const {
     step, setStep,
     raw, setRaw,
@@ -45,85 +40,90 @@ export function PasteCourseModal({
 
   return (
     <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-md" />
+
+      {/* Overlay */}
+      <div className="fixed inset-0 bg-purple-950/25 backdrop-blur-sm" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel
-          className="mx-auto w-full max-w-2xl rounded-2xl bg-card border border-border shadow-2xl overflow-hidden"
+          className="mx-auto w-full max-w-2xl rounded-2xl bg-white border border-purple-100 shadow-xl shadow-purple-100/50 overflow-hidden"
           style={{ maxHeight: "90vh", display: "flex", flexDirection: "column" }}
         >
-          {/* ── Header ── */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+
+          {/* Header */}
+          <div className="flex items-center justify-between px-7 py-5 border-b border-purple-50 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-accent/10">
-                <ClipboardPaste size={18} className="text-accent" />
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-500 to-violet-500 shadow-sm shadow-purple-200 flex items-center justify-center shrink-0">
+                <ClipboardPaste size={16} className="text-white" />
               </div>
-              <div>
-                <Dialog.Title className="text-base font-semibold leading-tight">
+              <div className="flex flex-col gap-0.5">
+                <Dialog.Title className="text-sm font-semibold text-gray-800 tracking-tight leading-none">
                   Import Course from Text
                 </Dialog.Title>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-xs text-gray-400">
                   Paste a structured outline to create a course with topics
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="hidden sm:flex items-center gap-1.5 mr-3">
+
+            <div className="flex items-center gap-3">
+              {/* Step pills */}
+              <div className="hidden sm:flex items-center gap-1.5">
                 {(["paste", "preview"] as const).map((s, i) => (
                   <div
                     key={s}
-                    className={`h-2 rounded-full transition-all duration-300 ${
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
                       step === s
-                        ? "bg-accent w-4"
+                        ? "bg-purple-500 w-5"
                         : i < ["paste", "preview"].indexOf(step)
-                        ? "bg-accent/60 w-2"
-                        : "bg-muted-foreground/30 w-2"
+                        ? "bg-purple-300 w-2"
+                        : "bg-gray-200 w-2"
                     }`}
                   />
                 ))}
               </div>
               <button
                 onClick={handleClose}
-                className="p-1.5 rounded-lg hover:bg-muted/20 transition text-muted-foreground hover:text-foreground"
+                className="h-7 w-7 flex items-center justify-center rounded-xl border border-purple-100 bg-purple-50 text-gray-400 hover:bg-purple-100 hover:text-purple-600 hover:border-purple-200 transition-all duration-150"
               >
-                <X size={18} />
+                <X size={13} />
               </button>
             </div>
           </div>
 
-          {/* ── Body ── */}
+          {/* Body */}
           <div className="flex-1 overflow-y-auto">
 
             {/* PASTE STEP */}
             {step === "paste" && (
               <div className="flex flex-col">
 
-                {/* ── Generate with AI toggle ── */}
-                <div className="px-6 pt-5 pb-3">
+                {/* AI toggle */}
+                <div className="px-7 pt-5 pb-3">
                   <button
                     onClick={() => setShowWizard((v) => !v)}
-                    className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${
+                    className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm transition-all duration-200 ${
                       showWizard
-                        ? "border-accent/40 bg-accent/5 text-accent"
-                        : "border-border hover:bg-muted/20 text-foreground"
+                        ? "border-purple-200 bg-purple-50 text-purple-700"
+                        : "border-purple-100 bg-white hover:bg-purple-50 hover:border-purple-200 text-gray-700"
                     }`}
                   >
-                    <Sparkles size={15} className={showWizard ? "text-accent" : "text-muted-foreground"} />
+                    <Sparkles size={14} className={showWizard ? "text-purple-500" : "text-gray-400"} />
                     <div className="text-left">
-                      <p className="font-medium text-sm leading-tight">Generate with AI</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="font-semibold text-sm leading-tight text-gray-800">Generate with AI</p>
+                      <p className="text-xs text-gray-400 mt-0.5">
                         Get a prompt to paste into ChatGPT, Claude, or Gemini
                       </p>
                     </div>
-                    <span className="ml-auto text-xs text-muted-foreground">
+                    <span className="ml-auto text-xs font-medium text-gray-400">
                       {showWizard ? "Hide ↑" : "Try it →"}
                     </span>
                   </button>
                 </div>
 
-                {/* ── AI Wizard (shown inline when toggled) ── */}
+                {/* AI Wizard inline */}
                 {showWizard && (
-                  <div className="mx-6 mb-3 rounded-xl border border-border bg-muted/5 overflow-hidden">
+                  <div className="mx-7 mb-3 rounded-2xl border border-purple-100 bg-purple-50/30 overflow-hidden">
                     <AIPromptWizard
                       onClose={() => setShowWizard(false)}
                       onDone={() => setShowWizard(false)}
@@ -131,23 +131,23 @@ export function PasteCourseModal({
                   </div>
                 )}
 
-                {/* ── Divider ── */}
+                {/* Divider */}
                 {showWizard && (
-                  <div className="flex items-center gap-3 px-6 mb-3">
-                    <div className="flex-1 h-px bg-border" />
-                    <span className="text-xs text-muted-foreground">or paste manually</span>
-                    <div className="flex-1 h-px bg-border" />
+                  <div className="flex items-center gap-3 px-7 mb-3">
+                    <div className="flex-1 h-px bg-purple-100" />
+                    <span className="text-xs font-medium text-gray-400">or paste manually</span>
+                    <div className="flex-1 h-px bg-purple-100" />
                   </div>
                 )}
 
-                {/* ── Format hint ── */}
+                {/* Format hint */}
                 {!showWizard && (
-                  <div className="px-6 pb-3">
-                    <div className="rounded-xl border border-border bg-muted/10 p-4">
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  <div className="px-7 pb-3">
+                    <div className="rounded-xl border border-purple-100 bg-purple-50/40 p-4">
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2.5">
                         Expected Format
                       </p>
-                      <pre className="text-xs text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap">
+                      <pre className="text-xs text-gray-500 font-mono leading-relaxed whitespace-pre-wrap">
 {`title: Your Course Title
 type: Frontend / Backend / DSA
 purpose: Why you're taking this (optional)
@@ -174,18 +174,18 @@ assignments:
                   </div>
                 )}
 
-                {/* ── Textarea ── */}
-                <div className="px-6 pb-5">
+                {/* Textarea */}
+                <div className="px-7 pb-6">
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
                       Paste your course outline
                     </label>
                     {!showWizard && (
                       <button
                         onClick={loadTemplate}
-                        className="text-xs text-accent hover:underline flex items-center gap-1"
+                        className="flex items-center gap-1 text-xs font-medium text-purple-500 hover:text-purple-700 transition-colors duration-150"
                       >
-                        <RotateCcw size={11} />
+                        <RotateCcw size={10} />
                         Load example
                       </button>
                     )}
@@ -193,19 +193,16 @@ assignments:
                   <textarea
                     ref={textareaRef}
                     value={raw}
-                    onChange={(e) => {
-                      setRaw(e.target.value);
-                      setParseError(null);
-                    }}
+                    onChange={(e) => { setRaw(e.target.value); setParseError(null); }}
                     placeholder={FORMAT_TEMPLATE}
-                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm font-mono resize-none focus:outline-none focus:ring-2 focus:ring-accent/50 placeholder:text-muted-foreground/30 leading-relaxed"
+                    className="w-full rounded-xl border border-purple-100 bg-white px-4 py-3 text-sm font-mono text-gray-700 resize-none focus:outline-none focus:border-purple-300 focus:ring-2 focus:ring-purple-100 placeholder:text-gray-200 leading-relaxed shadow-sm shadow-purple-50 transition-all duration-200"
                     style={{ minHeight: "180px" }}
                     spellCheck={false}
                   />
                   {parseError && (
-                    <div className="mt-2 flex items-center gap-2 text-sm text-red-500">
-                      <AlertCircle size={14} />
-                      {parseError}
+                    <div className="mt-2.5 flex items-center gap-2 rounded-xl border border-red-100 bg-red-50 px-3 py-2.5">
+                      <AlertCircle size={13} className="text-red-400 shrink-0" />
+                      <span className="text-xs font-medium text-red-500">{parseError}</span>
                     </div>
                   )}
                 </div>
@@ -214,17 +211,16 @@ assignments:
 
             {/* PREVIEW STEP */}
             {step === "preview" && parsed && (
-              <div className="px-6 py-5 flex flex-col gap-5">
+              <div className="px-7 py-6 flex flex-col gap-5">
                 <CourseMetaPreview parsed={parsed} />
                 {parsed.topics.length > 0 && <TopicsPreview parsed={parsed} />}
                 {parsed.resources.length > 0 && <ResourcesPreview parsed={parsed} />}
                 {parsed.projects.length > 0 && <ProjectsPreview parsed={parsed} />}
                 {parsed.assignments.length > 0 && <AssignmentsPreview parsed={parsed} />}
-
                 {createError && (
-                  <div className="flex items-center gap-2 text-sm text-red-500 bg-red-500/10 rounded-lg px-4 py-3">
-                    <AlertCircle size={14} className="shrink-0" />
-                    {createError}
+                  <div className="flex items-center gap-2.5 rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+                    <AlertCircle size={13} className="text-red-400 shrink-0" />
+                    <span className="text-xs font-medium text-red-500">{createError}</span>
                   </div>
                 )}
               </div>
@@ -232,26 +228,24 @@ assignments:
 
             {/* CREATING STEP */}
             {step === "creating" && (
-              <div className="flex flex-col items-center justify-center py-20 gap-4">
-                <div className="w-14 h-14 rounded-full border-2 border-accent/20 flex items-center justify-center">
-                  <Loader2 size={24} className="text-accent animate-spin" />
+              <div className="flex flex-col items-center justify-center py-20 gap-5">
+                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-purple-100 to-violet-100 border border-purple-200 flex items-center justify-center">
+                  <Loader2 size={22} className="text-purple-500 animate-spin" />
                 </div>
-                <div className="text-center">
-                  <p className="font-medium text-sm">Creating your course…</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Setting up topics, resources and more
-                  </p>
+                <div className="text-center flex flex-col gap-1">
+                  <p className="text-sm font-semibold text-gray-800 tracking-tight">Creating your course…</p>
+                  <p className="text-xs text-gray-400">Setting up topics, resources and more</p>
                 </div>
               </div>
             )}
           </div>
 
-          {/* ── Footer ── */}
+          {/* Footer */}
           {step !== "creating" && (
-            <div className="px-6 py-4 border-t border-border flex items-center justify-between gap-3 shrink-0 bg-card">
+            <div className="px-7 py-5 border-t border-purple-50 flex items-center justify-between gap-3 shrink-0 bg-white">
               <button
                 onClick={step === "preview" ? () => setStep("paste") : handleClose}
-                className="text-sm text-muted-foreground hover:text-foreground transition px-3 py-2 rounded-lg hover:bg-muted/20"
+                className="flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-purple-600 transition-colors duration-150 px-3 py-2 rounded-xl hover:bg-purple-50"
               >
                 {step === "preview" ? "← Back" : "Cancel"}
               </button>
@@ -260,24 +254,25 @@ assignments:
                 <button
                   onClick={handleParse}
                   disabled={!raw.trim()}
-                  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-accent text-accent-foreground text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-accent/90 transition"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white text-sm font-medium shadow-md shadow-purple-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.98]"
                 >
                   Preview Course
-                  <ChevronRight size={15} />
+                  <ChevronRight size={14} />
                 </button>
               )}
 
               {step === "preview" && (
                 <button
                   onClick={handleCreate}
-                  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-accent text-accent-foreground text-sm font-medium hover:bg-accent/90 transition"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white text-sm font-medium shadow-md shadow-purple-200 transition-all duration-200 active:scale-[0.98]"
                 >
-                  <CheckCircle2 size={15} />
+                  <CheckCircle2 size={14} />
                   Create Course
                 </button>
               )}
             </div>
           )}
+
         </Dialog.Panel>
       </div>
 
@@ -290,16 +285,16 @@ assignments:
   );
 }
 
-// ─── Preview sub-components ───────────────────────────────────────────────────
+// Preview sub-components
 
 function SectionLabel({ children, badge }: { children: React.ReactNode; badge?: string }) {
   return (
     <div className="flex items-center justify-between mb-3">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
         {children}
       </p>
       {badge && (
-        <span className="text-xs text-muted-foreground bg-muted/20 px-2 py-0.5 rounded-full">
+        <span className="text-xs font-semibold text-purple-500 bg-purple-50 border border-purple-100 px-2.5 py-0.5 rounded-full">
           {badge}
         </span>
       )}
@@ -311,7 +306,7 @@ function CourseMetaPreview({ parsed }: { parsed: ParsedCourse }) {
   return (
     <div>
       <SectionLabel>Course Details</SectionLabel>
-      <div className="rounded-xl border border-border bg-muted/5 p-4 grid grid-cols-2 gap-x-6 gap-y-3">
+      <div className="rounded-xl border border-purple-100 bg-purple-50/30 p-4 grid grid-cols-2 gap-x-6 gap-y-3">
         <MetaRow label="Title" value={parsed.title} span />
         {parsed.purpose && <MetaRow label="Purpose" value={parsed.purpose} span />}
         <MetaRow label="Type" value={parsed.type} />
@@ -330,23 +325,23 @@ function TopicsPreview({ parsed }: { parsed: ParsedCourse }) {
       <SectionLabel badge={`${parsed.topics.length} topics · ${subtopicCount} subtopics`}>
         Topics & Subtopics
       </SectionLabel>
-      <div className="rounded-xl border border-border overflow-hidden divide-y divide-border">
+      <div className="rounded-xl border border-purple-100 overflow-hidden divide-y divide-purple-50">
         {parsed.topics.map((topic, ti) => (
-          <div key={ti} className="bg-card">
-            <div className="flex items-center gap-2 px-4 py-3">
-              <ChevronRight size={14} className="text-accent shrink-0" />
-              <span className="text-sm font-medium">{topic.title}</span>
+          <div key={ti} className="bg-white">
+            <div className="flex items-center gap-2.5 px-4 py-3">
+              <ChevronRight size={13} className="text-purple-400 shrink-0" />
+              <span className="text-sm font-medium text-gray-700">{topic.title}</span>
               {topic.subtopics.length > 0 && (
-                <span className="ml-auto text-xs text-muted-foreground">
+                <span className="ml-auto text-xs font-semibold text-purple-400 bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">
                   {topic.subtopics.length}
                 </span>
               )}
             </div>
             {topic.subtopics.length > 0 && (
-              <div className="pb-2 pl-10 pr-4 flex flex-col gap-1">
+              <div className="pb-2.5 pl-10 pr-4 flex flex-col gap-1.5">
                 {topic.subtopics.map((sub, si) => (
-                  <div key={si} className="text-xs text-muted-foreground flex items-center gap-1.5">
-                    <span className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
+                  <div key={si} className="text-xs text-gray-400 flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-purple-300 shrink-0" />
                     {sub.title}
                   </div>
                 ))}
@@ -363,13 +358,13 @@ function ResourcesPreview({ parsed }: { parsed: ParsedCourse }) {
   return (
     <div>
       <SectionLabel badge={`${parsed.resources.length}`}>Resources</SectionLabel>
-      <div className="rounded-xl border border-border overflow-hidden divide-y divide-border">
+      <div className="rounded-xl border border-purple-100 overflow-hidden divide-y divide-purple-50">
         {parsed.resources.map((r, i) => (
-          <div key={i} className="flex items-center gap-3 px-4 py-3 bg-card">
-            <Link size={13} className="text-accent shrink-0" />
+          <div key={i} className="flex items-center gap-3 px-4 py-3 bg-white">
+            <Link size={13} className="text-purple-400 shrink-0" />
             <div className="min-w-0">
-              <p className="text-sm font-medium truncate">{r.title}</p>
-              <p className="text-xs text-muted-foreground truncate">{r.url}</p>
+              <p className="text-sm font-medium text-gray-700 truncate">{r.title}</p>
+              <p className="text-xs text-gray-400 truncate">{r.url}</p>
             </div>
           </div>
         ))}
@@ -382,14 +377,14 @@ function ProjectsPreview({ parsed }: { parsed: ParsedCourse }) {
   return (
     <div>
       <SectionLabel badge={`${parsed.projects.length}`}>Projects</SectionLabel>
-      <div className="rounded-xl border border-border overflow-hidden divide-y divide-border">
+      <div className="rounded-xl border border-purple-100 overflow-hidden divide-y divide-purple-50">
         {parsed.projects.map((p, i) => (
-          <div key={i} className="flex items-start gap-3 px-4 py-3 bg-card">
-            <FolderOpen size={13} className="text-accent shrink-0 mt-0.5" />
+          <div key={i} className="flex items-start gap-3 px-4 py-3 bg-white">
+            <FolderOpen size={13} className="text-purple-400 shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium">{p.title}</p>
+              <p className="text-sm font-medium text-gray-700">{p.title}</p>
               {p.description && (
-                <p className="text-xs text-muted-foreground mt-0.5">{p.description}</p>
+                <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{p.description}</p>
               )}
             </div>
           </div>
@@ -403,14 +398,14 @@ function AssignmentsPreview({ parsed }: { parsed: ParsedCourse }) {
   return (
     <div>
       <SectionLabel badge={`${parsed.assignments.length}`}>Assignments</SectionLabel>
-      <div className="rounded-xl border border-border overflow-hidden divide-y divide-border">
+      <div className="rounded-xl border border-purple-100 overflow-hidden divide-y divide-purple-50">
         {parsed.assignments.map((a, i) => (
-          <div key={i} className="flex items-start gap-3 px-4 py-3 bg-card">
-            <BookOpen size={13} className="text-accent shrink-0 mt-0.5" />
+          <div key={i} className="flex items-start gap-3 px-4 py-3 bg-white">
+            <BookOpen size={13} className="text-purple-400 shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium">{a.title}</p>
+              <p className="text-sm font-medium text-gray-700">{a.title}</p>
               {a.description && (
-                <p className="text-xs text-muted-foreground mt-0.5">{a.description}</p>
+                <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{a.description}</p>
               )}
             </div>
           </div>
@@ -420,13 +415,13 @@ function AssignmentsPreview({ parsed }: { parsed: ParsedCourse }) {
   );
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers
 
 function MetaRow({ label, value, span }: { label: string; value: string; span?: boolean }) {
   return (
     <div className={span ? "col-span-2" : ""}>
-      <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
-      <p className="text-sm font-medium">{value}</p>
+      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">{label}</p>
+      <p className="text-sm font-medium text-gray-700">{value}</p>
     </div>
   );
 }

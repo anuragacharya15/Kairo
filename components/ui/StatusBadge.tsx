@@ -3,17 +3,29 @@ interface Props {
 }
 
 const statusStyles: Record<Props["status"], string> = {
-  planned: "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-  active: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
-  paused: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300",
-  completed: "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
+  planned:
+    "bg-gray-100 text-gray-500 border border-gray-200",
+  active:
+    "bg-purple-50 text-purple-600 border border-purple-200",
+  paused:
+    "bg-amber-50 text-amber-600 border border-amber-200",
+  completed:
+    "bg-emerald-50 text-emerald-600 border border-emerald-200",
+};
+
+const statusDot: Record<Props["status"], string> = {
+  planned: "bg-gray-400",
+  active: "bg-purple-500",
+  paused: "bg-amber-400",
+  completed: "bg-emerald-500",
 };
 
 export function StatusBadge({ status }: Props) {
   return (
     <span
-      className={`text-xs font-medium px-2 py-1 rounded-md capitalize ${statusStyles[status]}`}
+      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full capitalize tracking-wide transition-colors duration-150 ${statusStyles[status]}`}
     >
+      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDot[status]}`} />
       {status}
     </span>
   );

@@ -19,36 +19,48 @@ export function DashboardHeader({ userId, onCourseCreated }: DashboardHeaderProp
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Your Courses</h1>
-          <p className="text-sm text-muted-foreground">
-            Track your learning progress across all courses
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+
+        {/* Title block */}
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-1.5 rounded-full bg-gradient-to-b from-purple-400 to-violet-500 shrink-0" />
+          <div className="flex flex-col gap-0.5">
+            <h1 className="text-xl font-bold text-gray-800 tracking-tight leading-none">
+              Your Courses
+            </h1>
+            <p className="text-xs text-gray-400 font-medium">
+              Track your learning progress across all courses
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+
+        {/* Action buttons */}
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => router.push("/roadmaps")}
-            className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium hover:bg-muted/40 transition"
+            className="inline-flex items-center gap-2 rounded-xl border border-purple-100 bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm shadow-purple-50 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-200 transition-all duration-200"
           >
-            <Map size={16} />
+            <Map size={14} className="text-gray-400" />
             Roadmaps
           </button>
+
           <button
             onClick={() => setPasteOpen(true)}
-            className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium hover:bg-muted/40 transition"
+            className="inline-flex items-center gap-2 rounded-xl border border-purple-100 bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm shadow-purple-50 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-200 transition-all duration-200"
           >
-            <ClipboardPaste size={16} />
+            <ClipboardPaste size={14} className="text-gray-400" />
             Import Course
           </button>
+
           <button
-            className="inline-flex items-center gap-2 rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition"
             onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 px-4 py-2 text-sm font-medium text-white shadow-md shadow-purple-200 transition-all duration-200 active:scale-[0.98]"
           >
-            <Plus size={16} />
+            <Plus size={14} />
             Add New Course
           </button>
         </div>
+
       </div>
 
       <AddCourseModal

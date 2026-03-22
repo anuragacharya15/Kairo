@@ -7,6 +7,7 @@ import { CourseGrid } from "@/components/dashboard/CourseGrid";
 import { EditCourseDialog } from "./EditCourseDialog";
 import { getCoursesByUser, Course } from "@/lib/api/course";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import Loading from "@/components/Loading";
 
 export default function DashboardClient() {
   const router = useRouter();
@@ -17,9 +18,6 @@ export default function DashboardClient() {
   const [loadingCourses, setLoadingCourses] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
-  /**
-   * Fetch courses for user
-   */
   const fetchCourses = useCallback(async (uid: string) => {
     setLoadingCourses(true);
     try {
@@ -32,16 +30,10 @@ export default function DashboardClient() {
     }
   }, []);
 
-  /**
-   * Remove deleted course from UI instantly
-   */
   const handleDeleted = (courseId: string) => {
     setCourses(prev => prev.filter(c => c.course_id !== courseId));
   };
 
-  /**
-   * Load authenticated user
-   */
   useEffect(() => {
     let isMounted = true;
 
@@ -68,18 +60,43 @@ export default function DashboardClient() {
   }, [fetchCourses, router]);
 
   if (loadingUser) {
-    return <p className="text-muted-foreground">Loading dashboard...</p>;
+    return (
+      <div className="flex flex-col gap-6 animate-pulse p-2">
+        <div className="flex items-center gap-3">
+          <div className="h-7 w-1.5 rounded-full bg-gradient-to-b from-purple-300 to-violet-300" />
+          <div className="h-5 w-40 rounded-xl bg-purple-100" />
+        </div>
+        <div className="h-3 w-32 rounded-lg bg-gray-100" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="h-40 rounded-2xl bg-white border border-purple-100 shadow-sm shadow-purple-50" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8">
       <DashboardHeader
         userId={userId!}
         onCourseCreated={() => fetchCourses(userId!)}
       />
 
       {loadingCourses ? (
-        <p className="text-muted-foreground">Loading courses...</p>
+        <Loading />
+      ) : courses.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-purple-100 bg-white py-16 px-8 shadow-sm shadow-purple-50 text-center">
+          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-purple-100 to-violet-100 flex items-center justify-center">
+            <svg className="w-6 h-6 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="text-sm font-semibold text-gray-700 tracking-tight">No courses yet</p>
+            <p className="text-xs text-gray-400">Create your first course to get started.</p>
+          </div>
+        </div>
       ) : (
         <CourseGrid
           courses={courses}

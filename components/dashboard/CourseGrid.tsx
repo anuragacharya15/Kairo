@@ -9,7 +9,7 @@ interface Props {
 
 export function CourseGrid({ courses, onEdit, onDeleted }: Props) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
       {courses.map((course) => (
         <CourseCard
           key={course.course_id}
