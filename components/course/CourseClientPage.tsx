@@ -19,7 +19,7 @@ export function CourseClientPage() {
   const [showUpgrade, setShowUpgrade] = useState(false);
 
   async function handleSave() {
-    if (isSaving) return; // prevent double click
+    if (isSaving) return;
 
     try {
       setIsSaving(true);
@@ -36,18 +36,15 @@ export function CourseClientPage() {
       }));
     } catch (err) {
       if (err instanceof APIError) {
-        // Topic limit → upgrade modal (expected flow)
         if (err.code === "TOPIC_LIMIT_EXCEEDED") {
           setShowUpgrade(true);
           return;
         }
 
-        // other backend errors
         alert(err.message);
         return;
       }
 
-      // ❗ Only log unexpected errors
       console.error("Unexpected save error:", err);
       alert("Something went wrong");
     } finally {
@@ -57,52 +54,88 @@ export function CourseClientPage() {
 
   return (
     <CourseLayout>
-      {/* ───────────────── Header + Save ───────────────── */}
-      <div className="sticky top-0 z-20 bg-background/80 backdrop-blur border-b">
-        <div className="flex items-start justify-between gap-8 px-8 py-6">
-          {/* Header */}
-          <div className="flex-1">
-            <CourseHeader />
+      {/* 🌈 PAGE BACKGROUND */}
+      <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-purple-100/40">
+
+        {/* ───────────── HEADER ───────────── */}
+        <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/70 border-b border-gray-200 shadow-sm">
+          <div className="flex items-start justify-between gap-8 px-8 py-6">
+            
+            {/* Header */}
+            <div className="flex-1">
+              <CourseHeader />
+            </div>
+
+            {/* Save Panel */}
+            <div className="shrink-0 pt-2 flex flex-col items-end gap-2">
+              <Button
+                size="sm"
+                disabled={!draft.isDirty || isSaving}
+                onClick={handleSave}
+                className="
+                  px-5
+                  rounded-xl
+                  bg-gradient-to-r from-purple-500 to-violet-500
+                  text-white
+                  shadow-md
+                  hover:shadow-lg
+                  transition-all
+                "
+              >
+                {isSaving
+                  ? "Saving..."
+                  : draft.lastSavedAt && !draft.isDirty
+                    ? "Saved ✓"
+                    : "Save changes"}
+              </Button>
+
+              {draft.lastSavedAt && !draft.isDirty && !isSaving && (
+                <span className="text-xs text-gray-500">
+                  Last saved{" "}
+                  {new Date(draft.lastSavedAt).toLocaleTimeString()}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ───────────── WORKSPACE ───────────── */}
+        <div className="grid grid-cols-12 gap-10 px-8 py-10">
+
+          {/* LEFT SIDE */}
+          <div className="col-span-8 flex flex-col gap-8">
+
+            {/* Topics */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+              <TopicsSection />
+            </div>
+
+            {/* Resources */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+              <ResourcesSection />
+            </div>
+
           </div>
 
-          {/* Save */}
-          <div className="shrink-0 pt-2 flex flex-col items-end gap-1">
-            <Button
-              size="sm"
-              disabled={!draft.isDirty || isSaving}
-              onClick={handleSave}
-            >
-              {isSaving
-                ? "Saving changes…"
-                : draft.lastSavedAt && !draft.isDirty
-                  ? "Saved ✓"
-                  : "Save changes"}
-            </Button>
+          {/* RIGHT SIDE */}
+          <div className="col-span-4 flex flex-col gap-6">
 
-            {draft.lastSavedAt && !draft.isDirty && !isSaving && (
-              <span className="text-xs text-muted-foreground">
-                Last saved{" "}
-                {new Date(draft.lastSavedAt).toLocaleTimeString()}
-              </span>
+            {draft.assignments_enabled && (
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+                <AssignmentsSection />
+              </div>
             )}
+
+            {draft.projects_enabled && (
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+                <ProjectsSection />
+              </div>
+            )}
+
           </div>
         </div>
       </div>
 
-      {/* ───────────────── Workspace ───────────────── */}
-      <div className="grid grid-cols-12 gap-10 px-8 pb-16">
-        {/* LEFT */}
-        <div className="col-span-8 flex flex-col gap-10">
-          <TopicsSection />
-          <ResourcesSection />
-        </div>
-
-        {/* RIGHT */}
-        <div className="col-span-4 flex flex-col gap-6">
-          {draft.assignments_enabled && <AssignmentsSection />}
-          {draft.projects_enabled && <ProjectsSection />}
-        </div>
-      </div>
       <UpgradeModal
         isOpen={showUpgrade}
         onClose={() => setShowUpgrade(false)}

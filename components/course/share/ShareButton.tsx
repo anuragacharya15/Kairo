@@ -68,7 +68,6 @@ export function ShareButton({ courseId, isPro }: Props) {
   function handleOpenChange(val: boolean) {
     setOpen(val)
     if (!val) {
-      // Reset state when closing
       setShareLink(null)
       setExpiry("never")
       setCopied(false)
@@ -81,7 +80,6 @@ export function ShareButton({ courseId, isPro }: Props) {
       <Button
         size="sm"
         variant="outline"
-        className="flex items-center gap-2"
         onClick={() => {
           if (!isPro) {
             setShowUpgrade(true)
@@ -89,30 +87,36 @@ export function ShareButton({ courseId, isPro }: Props) {
           }
           setOpen(true)
         }}
+        className="flex items-center gap-2 rounded-xl border border-purple-100 bg-white text-gray-600 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-200 shadow-sm shadow-purple-50 transition-all duration-200"
       >
         <Share2 className="w-4 h-4" />
         Share
       </Button>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md rounded-2xl border border-purple-100 bg-white p-6 shadow-xl shadow-purple-100/50">
           <DialogHeader>
-            <DialogTitle>Share this course</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg font-semibold text-gray-800">
+              Share this course
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-400">
               Anyone with the link can preview and add this course to their account.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col gap-4 pt-2">
+          <div className="flex flex-col gap-5 pt-3">
             {!shareLink ? (
               <>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium">Link expiry</label>
+                {/* Expiry */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium text-gray-600">
+                    Link expiry
+                  </label>
                   <Select
                     value={expiry}
                     onValueChange={(v) => setExpiry(v as ShareExpiry)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="rounded-xl border border-purple-100 bg-white text-sm shadow-sm shadow-purple-50">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -123,30 +127,42 @@ export function ShareButton({ courseId, isPro }: Props) {
                   </Select>
                 </div>
 
-                {/* Whiteboard sharing toggle */}
-                <div className="flex items-center justify-between">
+                {/* Toggle */}
+                <div className="flex items-center justify-between rounded-xl border border-purple-100 bg-purple-50/40 px-4 py-3">
                   <div className="flex flex-col gap-0.5">
-                    <label className="text-sm font-medium">Include whiteboards</label>
-                    <span className="text-xs text-muted-foreground">
-                      Recipients will receive a copy of your whiteboard notes
+                    <label className="text-sm font-medium text-gray-700">
+                      Include whiteboards
+                    </label>
+                    <span className="text-xs text-gray-400">
+                      Recipients will receive your whiteboard notes
                     </span>
                   </div>
+
                   <button
                     type="button"
                     role="switch"
                     aria-checked={whiteboards}
                     onClick={() => setWhiteboards((v) => !v)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors
-          ${whiteboards ? "bg-primary" : "bg-input"}`}
+                    className={`relative inline-flex h-6 w-11 rounded-full transition-colors duration-200 ${
+                      whiteboards
+                        ? "bg-gradient-to-r from-purple-500 to-violet-500"
+                        : "bg-gray-200"
+                    }`}
                   >
                     <span
-                      className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-background shadow-lg transform transition-transform
-            ${whiteboards ? "translate-x-5" : "translate-x-0"}`}
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                        whiteboards ? "translate-x-5" : "translate-x-0"
+                      }`}
                     />
                   </button>
                 </div>
 
-                <Button onClick={handleCreate} disabled={isCreating}>
+                {/* Button */}
+                <Button
+                  onClick={handleCreate}
+                  disabled={isCreating}
+                  className="w-full rounded-xl bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white shadow-md shadow-purple-200 transition-all duration-200"
+                >
                   {isCreating ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -159,24 +175,30 @@ export function ShareButton({ courseId, isPro }: Props) {
               </>
             ) : (
               <>
+                {/* Link */}
                 <div className="flex items-center gap-2">
                   <Input
                     readOnly
                     value={shareLink.url}
-                    className="text-sm font-mono"
+                    className="text-sm font-mono rounded-xl border border-purple-100 bg-white shadow-sm"
                   />
-                  <Button size="icon" variant="outline" onClick={handleCopy}>
+                  <Button
+                    size="icon"
+                    onClick={handleCopy}
+                    className="rounded-xl bg-white border border-purple-100 hover:bg-purple-50"
+                  >
                     {copied ? (
                       <Check className="w-4 h-4 text-green-500" />
                     ) : (
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-4 h-4 text-gray-500" />
                     )}
                   </Button>
                 </div>
 
                 {shareLink.expires_at && (
-                  <p className="text-xs text-muted-foreground">
-                    Expires {new Date(shareLink.expires_at).toLocaleDateString()}
+                  <p className="text-xs text-gray-400">
+                    Expires{" "}
+                    {new Date(shareLink.expires_at).toLocaleDateString()}
                   </p>
                 )}
 
@@ -184,6 +206,7 @@ export function ShareButton({ courseId, isPro }: Props) {
                   variant="outline"
                   size="sm"
                   onClick={() => setShareLink(null)}
+                  className="rounded-xl border border-purple-100 hover:bg-purple-50"
                 >
                   Generate a new link
                 </Button>

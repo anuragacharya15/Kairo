@@ -57,16 +57,30 @@ export default function CurrentPlanCard({ subscription, userId }: Props) {
   }
 
   return (
-    <section className="rounded-2xl border bg-card shadow-sm overflow-hidden">
+    <section className="rounded-2xl border border-purple-100 bg-white shadow-sm shadow-purple-50 overflow-hidden">
+
       {/* Header */}
-      <div className="px-6 pt-6 pb-4 border-b">
-        <h2 className="text-lg font-semibold">Subscription</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Manage your plan and billing.
-        </p>
+      <div className="px-6 pt-6 pb-5 border-b border-purple-50">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-purple-500 to-violet-500 shadow-sm shadow-purple-200 flex items-center justify-center shrink-0">
+            <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+            </svg>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <h2 className="text-sm font-semibold text-gray-800 tracking-tight leading-none">
+              Subscription
+            </h2>
+            <p className="text-xs text-gray-400">
+              Manage your plan and billing.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="px-6 py-5 space-y-3">
+      {/* Plan info + notices */}
+      <div className="px-6 py-5 flex flex-col gap-3">
         <PlanBanner
           subscription={subscription}
           expiryDateFormatted={expiryDateFormatted}
@@ -94,6 +108,7 @@ export default function CurrentPlanCard({ subscription, userId }: Props) {
         )}
       </div>
 
+      {/* Upgrade section */}
       {!isPremium && !isCancelled && (
         <UpgradeSection
           currentPlanId={subscription.plan_id}
@@ -104,15 +119,25 @@ export default function CurrentPlanCard({ subscription, userId }: Props) {
         />
       )}
 
+      {/* Top tier celebration */}
       {isPremium && !isCancelled && (
         <div className="px-6 pb-6">
-          <div className="rounded-xl bg-muted/30 border border-dashed p-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              You're on our highest tier. Enjoy all features! 🎉
-            </p>
+          <div className="rounded-2xl border border-purple-100 bg-gradient-to-br from-purple-50 to-violet-50 p-5 flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-500 to-violet-500 shadow-sm shadow-purple-200 flex items-center justify-center shrink-0 text-base">
+              🎉
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <p className="text-sm font-semibold text-gray-800 tracking-tight">
+                You're on our highest tier
+              </p>
+              <p className="text-xs text-gray-400">
+                Enjoy all features with no limits.
+              </p>
+            </div>
           </div>
         </div>
       )}
+
     </section>
   );
 }

@@ -23,13 +23,12 @@ export function CourseEditorProvider({
       _setDraft(hydrateDraftCourse(initialData, userId));
       hasHydrated.current = true;
     }
-  }, [initialData]);
+  }, [initialData, userId]);
 
-  // ✅ non-null safe setter exposed to consumers
   const setDraft: React.Dispatch<
     React.SetStateAction<DraftCourse>
   > = (updater) => {
-    _setDraft(prev => {
+    _setDraft((prev) => {
       if (!prev) return prev;
 
       return typeof updater === "function"
@@ -39,10 +38,22 @@ export function CourseEditorProvider({
   };
 
   function markDirty() {
-    setDraft(d => ({ ...d, isDirty: true }));
+    setDraft((d) => ({ ...d, isDirty: true }));
   }
 
-  if (!draft) return null; // loading / skeleton
+  // ✅ Improved loading UI (instead of null)
+  if (!draft) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-purple-100 bg-white shadow-sm shadow-purple-50 animate-pulse">
+          <div className="h-4 w-4 rounded-full bg-gradient-to-br from-purple-400 to-violet-400" />
+          <span className="text-sm text-gray-400 font-medium">
+            Loading course...
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <CourseEditorContext.Provider

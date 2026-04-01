@@ -17,7 +17,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-
 export function AssignmentsSection() {
   const { draft, setDraft, markDirty } = useCourseEditor();
 
@@ -68,9 +67,8 @@ export function AssignmentsSection() {
       action={
         <Button
           size="sm"
-          variant="outline"
           onClick={addAssignment}
-          className="flex items-center gap-1"
+          className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white rounded-xl px-4 py-2 shadow-md shadow-purple-200 transition-all duration-200"
         >
           <Plus className="h-4 w-4" />
           Add Assignment
@@ -78,21 +76,20 @@ export function AssignmentsSection() {
       }
     >
       {assignments.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
+        <div className="text-sm text-gray-400 bg-white border border-purple-100 rounded-xl p-4 text-center shadow-sm shadow-purple-50">
           No assignments added yet.
-        </p>
+        </div>
       ) : (
-        <div className="flex flex-col divide-y divide-gray-200 dark:divide-gray-700">
+        <div className="flex flex-col gap-4">
           {assignments.map(assignment => (
             <div
               key={assignment.id}
-              className="flex flex-col gap-2 py-2 px-2 rounded transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-900"
+              className="bg-white border border-purple-100 rounded-2xl p-4 shadow-sm shadow-purple-50 hover:shadow-md hover:scale-[1.01] transition-all duration-200 flex flex-col gap-3"
             >
-              {/* ───── Title ───── */}
+              {/* Title */}
               <EditableField
                 value={assignment.title}
                 onChange={v => updateAssignment(assignment.id, { title: v })}
-                className="font-medium"
               >
                 {({ value, onChange, onBlur }) => (
                   <Input
@@ -100,16 +97,15 @@ export function AssignmentsSection() {
                     onChange={e => onChange(e.target.value)}
                     onBlur={onBlur}
                     placeholder="Assignment title"
-                    className="border-none px-0 py-1 text-base focus:ring-0 focus:outline-none bg-transparent"
+                    className="border border-purple-100 rounded-xl px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-purple-100 focus:border-purple-300"
                   />
                 )}
               </EditableField>
 
-              {/* ───── Description ───── */}
+              {/* Description */}
               <EditableField
                 value={assignment.description || ""}
                 onChange={v => updateAssignment(assignment.id, { description: v })}
-                className="text-sm text-muted-foreground"
               >
                 {({ value, onChange, onBlur }) => (
                   <Textarea
@@ -118,14 +114,15 @@ export function AssignmentsSection() {
                     onChange={e => onChange(e.target.value)}
                     onBlur={onBlur}
                     placeholder="Add description…"
-                    className="border-none px-0 py-1 text-sm focus:ring-0 focus:outline-none bg-transparent text-muted-foreground"
+                    className="border border-purple-100 rounded-xl px-3 py-2 text-sm text-gray-600 focus:ring-2 focus:ring-purple-100 focus:border-purple-300"
                   />
                 )}
               </EditableField>
 
-              {/* ───── Status + Delete ───── */}
+              {/* Footer */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                {/* Status */}
+                <div className="flex items-center gap-2 text-xs text-gray-400">
                   <span>Status:</span>
                   <Select
                     value={assignment.status}
@@ -133,7 +130,7 @@ export function AssignmentsSection() {
                       updateAssignment(assignment.id, { status: v })
                     }
                   >
-                    <SelectTrigger className="w-32 h-8 text-xs">
+                    <SelectTrigger className="w-32 h-8 text-xs rounded-xl border border-purple-100 bg-white shadow-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -144,12 +141,14 @@ export function AssignmentsSection() {
                   </Select>
                 </div>
 
+                {/* Delete */}
                 <Button
                   size="icon"
                   variant="ghost"
                   onClick={() => deleteAssignment(assignment.id)}
+                  className="rounded-xl hover:bg-red-50 transition-all"
                 >
-                  <Trash2 className="h-4 w-4 text-white-500 hover:text-white-600" />
+                  <Trash2 className="h-4 w-4 text-red-400 hover:text-red-600" />
                 </Button>
               </div>
             </div>

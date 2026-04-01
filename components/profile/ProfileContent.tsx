@@ -16,7 +16,10 @@ export default async function ProfileContent() {
 
   if (!session?.user) redirect("/auth/login");
 
-  const profile = await getUserProfile(session.user.id, session.access_token);
+  const profile = await getUserProfile(
+    session.user.id,
+    session.access_token
+  );
 
   const userInfo = {
     id: session.user.id,
@@ -29,12 +32,21 @@ export default async function ProfileContent() {
   const accountInfo = normalizeAccountInfo(profile);
 
   return (
-    <div className="flex-1 px-10 py-10">
-      <div className="max-w-6xl mx-auto space-y-10">
+    <div className="flex-1 px-6 md:px-10 py-8 md:py-10 bg-muted/30 min-h-screen">
+      <div className="max-w-6xl mx-auto space-y-8">
+        
+        {/* Header */}
         <ProfileHeader />
-        <UserInfoSection user={userInfo} />
-        <BillingSection subscription={subscription} />
+
+        {/* Top Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <UserInfoSection user={userInfo} />
+          <BillingSection subscription={subscription} />
+        </div>
+
+        {/* Bottom Section */}
         <AccountInfoSection user={accountInfo} />
+
       </div>
     </div>
   );

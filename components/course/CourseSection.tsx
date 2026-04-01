@@ -14,11 +14,23 @@ export function CourseSection({
   children,
 }: Props) {
   return (
-    <section className="rounded-xl p-6 flex flex-col gap-4">
+    <section className="
+      rounded-2xl 
+      border 
+      bg-card 
+      shadow-sm 
+      hover:shadow-md 
+      transition-shadow
+      p-6 
+      flex flex-col gap-5
+    ">
       {/* ───── Header ───── */}
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-semibold">{title}</h2>
+        <div className="space-y-1">
+          <h2 className="text-lg font-semibold tracking-tight">
+            {title}
+          </h2>
+
           {description && (
             <p className="text-sm text-muted-foreground">
               {description}
@@ -33,8 +45,13 @@ export function CourseSection({
         )}
       </div>
 
+      {/* Divider */}
+      <div className="h-px bg-border" />
+
       {/* ───── Content ───── */}
-      {children}
+      <div className="flex flex-col gap-3">
+        {children}
+      </div>
     </section>
   );
 }

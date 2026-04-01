@@ -39,97 +39,117 @@ export function RoadmapsClientPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10 flex flex-col gap-8">
+    <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-10">
 
-      {/* Header */}
+      {/* ───────── Header ───────── */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Roadmaps</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Roadmaps</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Structured learning paths to reach your goals
           </p>
         </div>
+
         <button
           onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center gap-2 rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:opacity-90 transition"
         >
           <Plus size={16} />
           New Roadmap
         </button>
       </div>
 
-      {/* List */}
+      {/* ───────── Empty State ───────── */}
       {roadmaps.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-          <div className="rounded-full bg-muted p-5">
-            <Map size={28} className="text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center gap-5 py-28 text-center border rounded-2xl bg-muted/20">
+          <div className="rounded-full bg-background p-6 shadow-sm">
+            <Map size={32} className="text-muted-foreground" />
           </div>
+
           <div>
-            <p className="font-medium">No roadmaps yet</p>
+            <p className="font-semibold text-lg">No roadmaps yet</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Create your first roadmap to start tracking a learning path
+              Create your first roadmap to start tracking your learning journey
             </p>
           </div>
+
           <button
             onClick={() => setCreateOpen(true)}
-            className="inline-flex items-center gap-2 rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:opacity-90 transition"
           >
             <Plus size={16} />
-            New Roadmap
+            Create Roadmap
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        /* ───────── Grid ───────── */
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {roadmaps.map(roadmap => (
             <div
               key={roadmap.roadmap_id}
-              className="rounded-xl border bg-card p-5 flex flex-col gap-4 hover:shadow-sm transition"
+              className="group rounded-2xl border bg-card p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-all"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-primary/10 p-2 shrink-0">
-                    <Map size={16} className="text-primary" />
+
+              {/* Top */}
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="rounded-xl bg-primary/10 p-2">
+                    <Map size={18} className="text-primary" />
                   </div>
-                  <h2 className="font-semibold leading-tight">{roadmap.title}</h2>
+
+                  <div>
+                    <h2 className="font-semibold leading-tight group-hover:text-primary transition">
+                      {roadmap.title}
+                    </h2>
+                    {roadmap.description && (
+                      <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                        {roadmap.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
+
                 <button
                   onClick={() => setDeletingId(roadmap.roadmap_id)}
-                  className="p-1.5 rounded-md hover:bg-red-50 hover:text-red-500 text-muted-foreground transition shrink-0"
+                  className="opacity-0 group-hover:opacity-100 transition p-1.5 rounded-md hover:bg-red-50 hover:text-red-500 text-muted-foreground"
                 >
                   <Trash2 size={15} />
                 </button>
               </div>
 
-              {roadmap.description && (
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {roadmap.description}
-                </p>
-              )}
-
-              <div className="flex items-center justify-between mt-auto">
+              {/* Bottom */}
+              <div className="flex items-center justify-between mt-auto pt-2">
                 <span className="text-xs text-muted-foreground">
-                  {roadmap.course_ids.length} course{roadmap.course_ids.length !== 1 ? "s" : ""}
+                  {roadmap.course_ids.length} course
+                  {roadmap.course_ids.length !== 1 ? "s" : ""}
                 </span>
+
                 <button
                   onClick={() => router.push(`/roadmap/${roadmap.roadmap_id}`)}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium hover:opacity-70 transition"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:gap-2 transition-all"
                 >
                   Open
                   <ArrowRight size={15} />
                 </button>
               </div>
+
             </div>
           ))}
         </div>
       )}
 
+      {/* ───────── Create Modal ───────── */}
       <CreateRoadmapModal
         isOpen={createOpen}
         onClose={() => setCreateOpen(false)}
       />
 
-      {/* Delete confirm */}
-      <AlertDialog open={!!deletingId} onOpenChange={open => !open && setDeletingId(null)}>
+      {/* ───────── Delete Dialog ───────── */}
+      <AlertDialog
+        open={!!deletingId}
+        onOpenChange={(open) => !open && setDeletingId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete roadmap?</AlertDialogTitle>
@@ -137,6 +157,7 @@ export function RoadmapsClientPage() {
               This will permanently delete this roadmap. Your courses will not be affected.
             </AlertDialogDescription>
           </AlertDialogHeader>
+
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} disabled={deleting}>

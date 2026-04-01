@@ -26,27 +26,39 @@ function formatMinutes(minutes: number): string {
 }
 
 export default function StudySession({ topicId }: Props) {
-  const { isRunning, elapsedSeconds, stats, isLoadingStats, isSaving, start, stop } =
-    useStudySession({ topicId })
+  const {
+    isRunning,
+    elapsedSeconds,
+    stats,
+    isLoadingStats,
+    isSaving,
+    start,
+    stop,
+  } = useStudySession({ topicId })
 
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="rounded-2xl border border-purple-100 bg-white shadow-lg shadow-purple-100 overflow-hidden">
+
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 bg-muted/40 border-b">
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-purple-50/60 border-b border-purple-100">
+        <span className="text-[11px] font-semibold text-purple-500 uppercase tracking-wide">
           Study Session
         </span>
+
         {isSaving && (
-          <span className="text-xs text-muted-foreground animate-pulse">Saving...</span>
+          <span className="text-[11px] text-gray-400 animate-pulse">
+            Saving...
+          </span>
         )}
       </div>
 
-      <div className="px-3 py-3 flex flex-col gap-3">
-        {/* Live Timer */}
-        <div className="flex flex-col items-center gap-2">
+      <div className="px-4 py-4 flex flex-col gap-4">
+
+        {/* Timer */}
+        <div className="flex flex-col items-center gap-3">
           <div
-            className={`text-3xl font-mono font-bold tabular-nums transition-colors ${
-              isRunning ? "text-primary" : "text-muted-foreground"
+            className={`text-4xl font-mono font-bold tabular-nums tracking-tight transition-all duration-200 ${
+              isRunning ? "text-purple-600" : "text-gray-300"
             }`}
           >
             {formatTime(elapsedSeconds)}
@@ -55,9 +67,8 @@ export default function StudySession({ topicId }: Props) {
           {isRunning ? (
             <Button
               size="sm"
-              variant="destructive"
-              className="w-full flex items-center gap-2"
               onClick={stop}
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-red-500 hover:bg-red-600 text-white shadow-sm"
             >
               <StopCircle className="w-4 h-4" />
               Stop Session
@@ -65,8 +76,8 @@ export default function StudySession({ topicId }: Props) {
           ) : (
             <Button
               size="sm"
-              className="w-full flex items-center gap-2"
               onClick={start}
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white shadow-md shadow-purple-200"
             >
               <PlayCircle className="w-4 h-4" />
               Start Session
@@ -74,40 +85,42 @@ export default function StudySession({ topicId }: Props) {
           )}
 
           {isRunning && (
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-[11px] text-gray-400 text-center leading-relaxed">
               Session will save automatically when you leave
             </p>
           )}
         </div>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-3 gap-1 border-t pt-3">
-          {/* Today */}
-          <div className="flex flex-col items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-xs font-medium">
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-2 border-t border-purple-100 pt-4">
+
+          {/* Total Time */}
+          <div className="flex flex-col items-center gap-1.5 bg-purple-50/40 rounded-xl py-2">
+            <Clock className="w-4 h-4 text-purple-400" />
+            <span className="text-xs font-semibold text-gray-700">
               {isLoadingStats ? "—" : formatMinutes(stats?.today_minutes ?? 0)}
             </span>
-            <span className="text-[10px] text-muted-foreground leading-none">Total</span>
+            <span className="text-[10px] text-gray-400">Total</span>
           </div>
 
           {/* Sessions */}
-          <div className="flex flex-col items-center gap-1">
-            <BookOpen className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-xs font-medium">
+          <div className="flex flex-col items-center gap-1.5 bg-purple-50/40 rounded-xl py-2">
+            <BookOpen className="w-4 h-4 text-purple-400" />
+            <span className="text-xs font-semibold text-gray-700">
               {isLoadingStats ? "—" : (stats?.total_sessions ?? 0)}
             </span>
-            <span className="text-[10px] text-muted-foreground leading-none">Sessions</span>
+            <span className="text-[10px] text-gray-400">Sessions</span>
           </div>
 
           {/* Streak */}
-          <div className="flex flex-col items-center gap-1">
-            <Flame className="w-3.5 h-3.5 text-orange-400" />
-            <span className="text-xs font-medium">
+          <div className="flex flex-col items-center gap-1.5 bg-purple-50/40 rounded-xl py-2">
+            <Flame className="w-4 h-4 text-orange-400" />
+            <span className="text-xs font-semibold text-gray-700">
               {isLoadingStats ? "—" : `${stats?.streak_days ?? 0}d`}
             </span>
-            <span className="text-[10px] text-muted-foreground leading-none">Streak</span>
+            <span className="text-[10px] text-gray-400">Streak</span>
           </div>
+
         </div>
       </div>
     </div>

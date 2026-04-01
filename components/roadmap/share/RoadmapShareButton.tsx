@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Share2, Copy, Check, Loader2 } from "lucide-react"
+import { Share2, Copy, Check, Loader2, Sparkles } from "lucide-react"
 import { createRoadmapShareLink, ShareExpiry, RoadmapShareLink } from "@/lib/course/roadmap-share"
 import { toast } from "@/hooks/use-toast"
 import { UpgradeModal } from "@/components/subscription/UpgradeModal"
@@ -70,82 +70,117 @@ export function RoadmapShareButton({ roadmapId }: Props) {
       <Button
         size="sm"
         variant="outline"
-        className="flex items-center gap-2"
-        onClick={() => {
-          setOpen(true)
-        }}
+        className="flex items-center gap-2 hover:shadow-sm transition"
+        onClick={() => setOpen(true)}
       >
         <Share2 className="w-4 h-4" />
         Share
       </Button>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Share this roadmap</DialogTitle>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          
+          {/* Header */}
+          <DialogHeader className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <DialogTitle>Share your roadmap</DialogTitle>
+            </div>
             <DialogDescription>
-              Anyone with the link can preview and add this roadmap — including all its courses — to their account.
+              Create a public link to share your roadmap with others.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col gap-4 pt-2">
+          <div className="flex flex-col gap-5 pt-2">
             {!shareLink ? (
               <>
-                <div className="flex flex-col gap-1.5">
+                {/* Expiry */}
+                <div className="space-y-1.5">
                   <label className="text-sm font-medium">Link expiry</label>
                   <Select value={expiry} onValueChange={(v) => setExpiry(v as ShareExpiry)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="rounded-lg">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="never">Never expires</SelectItem>
-                      <SelectItem value="7d">Expires in 7 days</SelectItem>
-                      <SelectItem value="30d">Expires in 30 days</SelectItem>
+                      <SelectItem value="7d">7 days</SelectItem>
+                      <SelectItem value="30d">30 days</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-0.5">
-                    <label className="text-sm font-medium">Include whiteboards</label>
-                    <span className="text-xs text-muted-foreground">
-                      Recipients receive a copy of your whiteboard notes
-                    </span>
+                {/* Whiteboard toggle */}
+                <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/40">
+                  <div>
+                    <p className="text-sm font-medium">Include whiteboards</p>
+                    <p className="text-xs text-muted-foreground">
+                      Share notes along with roadmap
+                    </p>
                   </div>
+
                   <button
-                    type="button"
-                    role="switch"
-                    aria-checked={whiteboards}
-                    onClick={() => setWhiteboards((v) => !v)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors
-                      ${whiteboards ? "bg-primary" : "bg-input"}`}
+                    onClick={() => setWhiteboards(v => !v)}
+                    className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
+                      whiteboards ? "bg-primary" : "bg-muted"
+                    }`}
                   >
-                    <span className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-background shadow-lg transform transition-transform
-                      ${whiteboards ? "translate-x-5" : "translate-x-0"}`} />
+                    <span
+                      className={`h-5 w-5 bg-white rounded-full shadow transform transition ${
+                        whiteboards ? "translate-x-5" : "translate-x-0"
+                      }`}
+                    />
                   </button>
                 </div>
 
-                <Button onClick={handleCreate} disabled={isCreating}>
+                {/* Generate button */}
+                <Button
+                  onClick={handleCreate}
+                  disabled={isCreating}
+                  className="w-full"
+                >
                   {isCreating ? (
-                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating link…</>
-                  ) : "Generate share link"}
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    "Generate share link"
+                  )}
                 </Button>
               </>
             ) : (
               <>
+                {/* Link box */}
                 <div className="flex items-center gap-2">
-                  <Input readOnly value={shareLink.url} className="text-sm font-mono" />
+                  <Input
+                    readOnly
+                    value={shareLink.url}
+                    className="font-mono text-xs rounded-lg"
+                  />
                   <Button size="icon" variant="outline" onClick={handleCopy}>
-                    {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    {copied ? (
+                      <Check className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
                   </Button>
                 </div>
 
+                {/* Expiry text */}
                 {shareLink.expires_at && (
-                  <p className="text-xs text-muted-foreground">
-                    Expires {new Date(shareLink.expires_at).toLocaleDateString()}
+                  <p className="text-xs text-muted-foreground text-center">
+                    Expires on{" "}
+                    {new Date(shareLink.expires_at).toLocaleDateString()}
                   </p>
                 )}
 
-                <Button variant="outline" size="sm" onClick={() => setShareLink(null)}>
-                  Generate a new link
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShareLink(null)}
+                  className="w-full"
+                >
+                  Generate new link
                 </Button>
               </>
             )}
@@ -156,7 +191,7 @@ export function RoadmapShareButton({ roadmapId }: Props) {
       <UpgradeModal
         isOpen={showUpgrade}
         onClose={() => setShowUpgrade(false)}
-        message="Roadmap sharing is a Pro feature. Upgrade to share your roadmaps with others."
+        message="Roadmap sharing is a Pro feature. Upgrade to unlock sharing."
       />
     </>
   )

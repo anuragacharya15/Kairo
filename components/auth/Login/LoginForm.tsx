@@ -44,69 +44,95 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Welcome Back</CardTitle>
-          <CardDescription>Log In into your existing account</CardDescription>
+      <Card className="border bg-card shadow-sm rounded-2xl">
+        <CardHeader className="space-y-2 text-center">
+          <CardTitle className="text-2xl font-semibold">
+            Welcome Back 👋
+          </CardTitle>
+          <CardDescription>
+            Login to continue your learning journey
+          </CardDescription>
         </CardHeader>
-        <CardContent></CardContent>
-        <CardContent>
+
+        <CardContent className="flex flex-col gap-6">
           {/* Google Auth */}
           <GoogleAuthButton />
-          <div className="relative text-center text-sm my-7">
-            <span className="bg-background px-2 text-muted-foreground">
+
+          {/* Divider */}
+          <div className="relative text-center text-xs uppercase tracking-wide text-muted-foreground">
+            <span className="bg-card px-2 relative z-10">
               Or continue with email
             </span>
-          </div>
-          <form onSubmit={handleLogin}>
-            <div className="flex flex-col gap-6">
-              {/* Email */}
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              {/* Password */}
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-
-              {error && <p className="text-sm text-red-500">{error}</p>}
-
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
-              </Button>
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
             </div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+            {/* Email */}
+            <div className="grid gap-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-10"
+              />
+            </div>
+
+            {/* Password */}
+            <div className="grid gap-1.5">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-xs text-muted-foreground hover:text-primary transition"
+                >
+                  Forgot?
+                </Link>
+              </div>
+
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-10"
+              />
+            </div>
+
+            {/* Error */}
+            {error && (
+              <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
+                {error}
+              </p>
+            )}
+
+            {/* Button */}
+            <Button
+              type="submit"
+              className="w-full h-10 font-medium"
+              disabled={isLoading}
+            >
+              {isLoading ? "Logging in..." : "Login"}
+            </Button>
           </form>
 
-          <div className="mt-7 text-center text-sm">
+          {/* Footer */}
+          <p className="text-sm text-center text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <Link href="/auth/sign-up" className="underline underline-offset-4">
+            <Link
+              href="/auth/sign-up"
+              className="text-primary font-medium hover:underline"
+            >
               Sign up
             </Link>
-          </div>
+          </p>
         </CardContent>
       </Card>
     </div>

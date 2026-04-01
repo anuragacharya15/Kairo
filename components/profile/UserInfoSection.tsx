@@ -14,15 +14,15 @@ export default function UserInfoSection({ user }: Props) {
   const [name, setName] = useState(user.name);
   const [saving, setSaving] = useState(false);
 
+  const isChanged = name !== user.name;
+
   async function handleSave() {
     try {
       setSaving(true);
 
       await updateUserProfile(user.id, name);
 
-      // update original value to prevent button staying enabled
       user.name = name;
-
     } catch (err) {
       console.error("Update failed", err);
       alert("Failed to update profile");
@@ -32,39 +32,81 @@ export default function UserInfoSection({ user }: Props) {
   }
 
   return (
-    <section className="rounded-2xl border bg-card p-6 shadow-sm">
-      <div className="space-y-1 mb-6">
-        <h2 className="text-lg font-semibold">User Info</h2>
+    <section
+      className="
+        rounded-2xl 
+        border 
+        bg-card 
+        shadow-sm 
+        hover:shadow-md 
+        transition-shadow
+        p-6 
+        space-y-6
+      "
+    >
+      {/* Header */}
+      <div className="space-y-1">
+        <h2 className="text-lg font-semibold tracking-tight">
+          User Info
+        </h2>
         <p className="text-sm text-muted-foreground">
-          Manage your profile details.
+          Manage your profile details
         </p>
       </div>
 
-      <div className="flex items-center gap-6">
-        {/* avatar UI stays */}
+      {/* Divider */}
+      <div className="h-px bg-border" />
+
+      {/* Content */}
+      <div className="flex items-start gap-6">
+        {/* Avatar */}
         <AvatarPicker
           name={name}
           avatarUrl={user.avatar_url}
         />
 
-        <div className="flex-1 space-y-3 max-w-sm">
+        {/* Form */}
+        <div className="flex-1 max-w-sm space-y-4">
+          {/* Name Field */}
           <div className="space-y-1">
-            <label className="text-sm font-medium">Display Name</label>
+            <label className="text-sm font-medium">
+              Display Name
+            </label>
 
             <input
-              className="w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30 transition"
+              className="
+                w-full 
+                rounded-lg 
+                border 
+                bg-background 
+                px-3 py-2 
+                text-sm 
+                outline-none 
+                focus:ring-2 
+                focus:ring-primary/30 
+                transition
+              "
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
 
-          <Button
-            onClick={handleSave}
-            disabled={saving || name === user.name}
-            className="text-sm font-medium hover:disabled:opacity-50"
-          >
-            {saving ? "Saving..." : "Save changes"}
-          </Button>
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleSave}
+              disabled={saving || !isChanged}
+              className="text-sm font-medium"
+            >
+              {saving ? "Saving..." : "Save changes"}
+            </Button>
+
+            {isChanged && !saving && (
+              <span className="text-xs text-muted-foreground">
+                Unsaved changes
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </section>

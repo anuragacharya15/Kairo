@@ -30,15 +30,16 @@ export function CourseHeader() {
 
   return (
     <div className="flex flex-col gap-6 pb-8">
-      {/* ───────── TITLE + SHARE ───────── */}
-      <div className="flex flex-col gap-4 max-w-5xl">
+
+      {/* CARD WRAPPER */}
+      <div className="bg-white border border-purple-100 rounded-2xl p-6 shadow-sm shadow-purple-50 flex flex-col gap-6">
+
+        {/* TITLE + SHARE */}
         <div className="flex items-start justify-between gap-4">
-          {/* TITLE */}
           <div className="flex-1">
             <EditableField
               value={draft.title}
               onChange={(v) => update({ title: v })}
-              className="text-3xl font-semibold tracking-tight"
             >
               {({ value, onChange, onBlur }) => (
                 <Input
@@ -46,28 +47,21 @@ export function CourseHeader() {
                   value={value}
                   onChange={(e) => onChange(e.target.value)}
                   onBlur={onBlur}
-                  className="
-                    text-3xl font-semibold
-                    px-3 py-2
-                    rounded-lg
-                    border border-transparent
-                    focus-visible:border-border
-                    focus-visible:bg-muted/40
-                    focus-visible:ring-0
-                  "
+                  placeholder="Course title..."
+                  className="text-2xl font-semibold px-4 py-2 rounded-xl border border-purple-100 focus:ring-2 focus:ring-purple-100 focus:border-purple-300 text-gray-800"
                 />
               )}
             </EditableField>
           </div>
 
-          {/* SHARE */}
           <div className="shrink-0 pt-1">
             <ShareButton courseId={draft.course_id} isPro={isPro} />
           </div>
         </div>
 
-        {/* META ROW */}
-        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+        {/* META */}
+        <div className="flex flex-wrap items-center gap-4">
+
           {/* TYPE */}
           <EditableField
             value={draft.type}
@@ -78,15 +72,8 @@ export function CourseHeader() {
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 onBlur={onBlur}
-                className="
-                  w-40
-                  px-2 py-1
-                  rounded-md
-                  border border-transparent
-                  focus-visible:border-border
-                  focus-visible:bg-muted/40
-                  focus-visible:ring-0
-                "
+                placeholder="Type"
+                className="w-36 rounded-xl border border-purple-100 px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-purple-100 focus:border-purple-300"
               />
             )}
           </EditableField>
@@ -98,7 +85,7 @@ export function CourseHeader() {
               update({ priority: v as typeof draft.priority })
             }
           >
-            <SelectTrigger className="h-8 w-32 px-3 text-sm">
+            <SelectTrigger className="w-32 rounded-xl border border-purple-100 bg-white shadow-sm text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -115,7 +102,7 @@ export function CourseHeader() {
               update({ status: v as typeof draft.status })
             }
           >
-            <SelectTrigger className="h-8 w-36 px-3 text-sm">
+            <SelectTrigger className="w-36 rounded-xl border border-purple-100 bg-white shadow-sm text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -128,51 +115,44 @@ export function CourseHeader() {
 
           <StatusBadge status={draft.status} />
         </div>
-      </div>
 
-      {/* ───────── DESCRIPTION ───────── */}
-      <EditableField
-        value={draft.purpose || "Add a short description…"}
-        onChange={(v) => update({ purpose: v })}
-        className="text-sm text-muted-foreground max-w-4xl"
-      >
-        {({ value, onChange, onBlur }) => (
-          <Textarea
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={onBlur}
-            rows={3}
-            className="
-              px-3 py-2
-              rounded-lg
-              border border-transparent
-              focus-visible:border-border
-              focus-visible:bg-muted/40
-              focus-visible:ring-0
-              resize-none
-              text-sm
-            "
-          />
-        )}
-      </EditableField>
+        {/* DESCRIPTION */}
+        <EditableField
+          value={draft.purpose || ""}
+          onChange={(v) => update({ purpose: v })}
+        >
+          {({ value, onChange, onBlur }) => (
+            <Textarea
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={onBlur}
+              placeholder="Add a short description..."
+              rows={3}
+              className="rounded-xl border border-purple-100 px-4 py-3 text-sm text-gray-600 focus:ring-2 focus:ring-purple-100 focus:border-purple-300 resize-none"
+            />
+          )}
+        </EditableField>
 
-      {/* ───────── TOGGLES ───────── */}
-      <div className="flex gap-8 pt-2 text-sm text-muted-foreground">
-        <label className="flex items-center gap-2">
-          <Switch
-            checked={draft.projects_enabled}
-            onCheckedChange={(v) => update({ projects_enabled: v })}
-          />
-          Projects
-        </label>
+        {/* TOGGLES */}
+        <div className="flex gap-6 pt-2 text-sm text-gray-600">
 
-        <label className="flex items-center gap-2">
-          <Switch
-            checked={draft.assignments_enabled}
-            onCheckedChange={(v) => update({ assignments_enabled: v })}
-          />
-          Assignments
-        </label>
+          <label className="flex items-center gap-2 bg-purple-50 px-3 py-2 rounded-xl border border-purple-100">
+            <Switch
+              checked={draft.projects_enabled}
+              onCheckedChange={(v) => update({ projects_enabled: v })}
+            />
+            Projects
+          </label>
+
+          <label className="flex items-center gap-2 bg-purple-50 px-3 py-2 rounded-xl border border-purple-100">
+            <Switch
+              checked={draft.assignments_enabled}
+              onCheckedChange={(v) => update({ assignments_enabled: v })}
+            />
+            Assignments
+          </label>
+
+        </div>
       </div>
     </div>
   );

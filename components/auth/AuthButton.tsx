@@ -11,21 +11,35 @@ export async function AuthButton() {
 
   if (!user) {
     return (
-      <div className="flex gap-2">
-        <Button asChild size="sm" variant="outline">
+      <div className="flex items-center gap-2">
+        
+        <Button
+          asChild
+          size="sm"
+          variant="ghost"
+          className="h-9 px-4 text-sm font-medium hover:bg-muted/50"
+        >
           <Link href="/auth/login">Sign in</Link>
         </Button>
-        <Button asChild size="sm">
-          <Link href="/auth/sign-up">Sign up</Link>
+
+        <Button
+          asChild
+          size="sm"
+          className="h-9 px-4 text-sm font-medium shadow-sm"
+        >
+          <Link href="/auth/sign-up">Get Started</Link>
         </Button>
+
       </div>
     );
   }
 
   return (
-    <NavbarUser
-      name={user.user_metadata?.full_name || ""}
-      email={user.email!}
-    />
+    <div className="flex items-center">
+      <NavbarUser
+        name={user.user_metadata?.full_name || ""}
+        email={user.email!}
+      />
+    </div>
   );
 }

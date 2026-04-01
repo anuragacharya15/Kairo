@@ -83,6 +83,7 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
             })
             return
         }
+
         setIsSaving(true)
 
         try {
@@ -96,10 +97,12 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
                 })
                 return
             }
+
             if (result?.error === "PLAN_UPGRADE_REQUIRED") {
                 setShowUpgrade(true)
                 return
             }
+
             toast({
                 title: "Save failed",
                 description: result?.error || "Unknown error occurred.",
@@ -110,7 +113,7 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
                 setShowUpgrade(true)
                 return
             }
-            console.error("Save error:", err)
+
             toast({
                 title: "Save failed",
                 description: "Could not save whiteboard.",
@@ -125,26 +128,27 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
 
     return (
         <aside
-            className={`border-r bg-muted/30 flex flex-col h-screen transition-all duration-300 overflow-hidden ${
+            className={`h-screen flex flex-col transition-all duration-300 border-r border-gray-200 bg-gradient-to-b from-white to-purple-50/30 shadow-sm ${
                 collapsed ? "w-20" : "w-80"
             }`}
         >
-            {/* BACK + COLLAPSE ROW — always visible */}
-            <div className="flex items-center justify-between p-2 border-b shrink-0">
+            {/* Header */}
+            <div className="flex items-center justify-between px-3 py-2 border-b bg-white/70 backdrop-blur">
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => router.push(`/course/${courseId}`)}
-                    className="flex items-center gap-2 text-muted-foreground"
+                    className="flex items-center gap-2 text-gray-600 hover:text-black"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    {!collapsed && "Back to Course"}
+                    {!collapsed && "Back"}
                 </Button>
 
                 <Button
                     size="icon"
                     variant="ghost"
                     onClick={() => setCollapsed(!collapsed)}
+                    className="rounded-lg hover:bg-purple-100"
                 >
                     {collapsed ? (
                         <PanelLeftOpen className="w-4 h-4" />
@@ -154,18 +158,14 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
                 </Button>
             </div>
 
-            {/*
-                SIDEBAR BODY — always mounted, hidden via CSS when collapsed.
-                Using visibility + opacity instead of conditional rendering
-                preserves all React state (timers, inputs, etc.) across toggles.
-            */}
+            {/* Body */}
             <div
-                className={`flex flex-col flex-1 overflow-hidden transition-opacity duration-300 ${
+                className={`flex flex-col flex-1 transition-all duration-300 ${
                     collapsed ? "invisible opacity-0 pointer-events-none" : "visible opacity-100"
                 }`}
             >
-                {/* TOPIC TITLE */}
-                <div className="px-4 py-3 border-b shrink-0">
+                {/* Topic Title */}
+                <div className="px-4 py-4 border-b">
                     {editingTopic ? (
                         <Input
                             ref={topicInputRef}
@@ -173,7 +173,7 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
                             autoFocus
                             onChange={e => handleTitleChange(e.target.value)}
                             onBlur={() => setEditingTopic(false)}
-                            className="text-lg font-semibold"
+                            className="text-lg font-semibold rounded-xl border-gray-200 focus:ring-2 focus:ring-purple-300"
                         />
                     ) : (
                         <div
@@ -183,35 +183,34 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
                             <h2 className="text-lg font-semibold">
                                 {currentTopic.title || "Untitled topic"}
                             </h2>
-                            <Pencil className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                            <Pencil className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100" />
                         </div>
                     )}
                 </div>
 
-                {/* SUBTOPICS SECTION */}
-                <div className="px-4 pt-3 pb-2 shrink-0">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {/* Subtopics */}
+                <div className="px-4 pt-4 pb-2">
+                    <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs font-semibold text-gray-500 uppercase">
                             Subtopics
                         </span>
+
                         <Button
                             size="sm"
-                            variant="outline"
                             onClick={handleAddSubtopic}
-                            className="h-7 px-2"
+                            className="h-7 px-3 text-xs bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg shadow-sm"
                         >
                             <Plus className="w-3 h-3 mr-1" />
                             Add
                         </Button>
                     </div>
 
-                    {/* Fixed height scroll area */}
-                    <ScrollArea className="h-[45vh]">
-                        <div className="flex flex-col space-y-1 pr-2">
+                    <ScrollArea className="h-[45vh] pr-2">
+                        <div className="flex flex-col gap-1">
                             {visibleSubtopics.map(sub => (
                                 <div
                                     key={sub.id}
-                                    className="group flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted/50 transition"
+                                    className="group flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-purple-50 transition"
                                 >
                                     <Checkbox
                                         checked={sub.is_completed}
@@ -230,13 +229,13 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
                                                     handleSubtopicTitle(sub.id, e.target.value)
                                                 }
                                                 onBlur={() => setEditingSubId(null)}
-                                                className="border-none shadow-none px-0 text-sm"
+                                                className="border-none shadow-none px-0 text-sm bg-transparent focus:ring-0"
                                             />
                                         ) : (
                                             <span
                                                 className={`text-sm ${
                                                     sub.is_completed
-                                                        ? "line-through text-muted-foreground"
+                                                        ? "line-through text-gray-400"
                                                         : ""
                                                 }`}
                                             >
@@ -245,20 +244,16 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
                                         )}
                                     </div>
 
-                                    <div className="flex opacity-0 group-hover:opacity-100">
-                                        <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            onClick={() => setEditingSubId(sub.id)}
-                                        >
-                                            <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+                                    <div className="flex opacity-0 group-hover:opacity-100 transition">
+                                        <Button size="icon" variant="ghost">
+                                            <Pencil className="w-3.5 h-3.5 text-gray-400" />
                                         </Button>
                                         <Button
                                             size="icon"
                                             variant="ghost"
                                             onClick={() => handleDeleteSubtopic(sub.id)}
                                         >
-                                            <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
+                                            <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500" />
                                         </Button>
                                     </div>
                                 </div>
@@ -267,29 +262,30 @@ export default function TopicSidebar({ topicId, courseId }: Props) {
                     </ScrollArea>
                 </div>
 
-                {/* SAVE BUTTON */}
-                <div className="px-4 pb-3 shrink-0 mb-5">
+                {/* Save Button */}
+                <div className="px-4 pb-3">
                     <Button
                         size="sm"
-                        variant="outline"
-                        className="flex items-center justify-center gap-2 w-full"
                         onClick={handleSave}
+                        className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-xl shadow-md"
                     >
                         <SaveIcon className="w-4 h-4" />
-                        {isSaving ? "Saving Whiteboard..." : "Save Whiteboard"}
+                        {isSaving ? "Saving..." : "Save Whiteboard"}
                     </Button>
                 </div>
 
-                {/* STUDY SESSION — fills remaining space */}
-                <div className="px-4 py-3 flex-1 overflow-auto">
-                    <StudySession topicId={topicId} />
+                {/* Study Session */}
+                <div className="px-4 pb-4 flex-1 overflow-auto">
+                    <div className="bg-white rounded-2xl shadow-sm border p-3">
+                        <StudySession topicId={topicId} />
+                    </div>
                 </div>
             </div>
 
             <UpgradeModal
                 isOpen={showUpgrade}
                 onClose={() => setShowUpgrade(false)}
-                message="Saving whiteboards is a Pro feature. Upgrade to unlock unlimited saves and keep your progress secure."
+                message="Saving whiteboards is a Pro feature. Upgrade to unlock unlimited saves."
             />
         </aside>
     )

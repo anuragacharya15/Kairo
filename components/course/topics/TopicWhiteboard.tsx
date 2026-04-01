@@ -25,14 +25,12 @@ export default function TopicWhiteboard({ documentId }: Props) {
     const [initialData, setInitialData] = useState<ExcalidrawSnapshot | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
-    // Load snapshot BEFORE rendering Excalidraw, pass via initialData prop
     useEffect(() => {
         let cancelled = false
 
         async function loadSnapshot() {
             let snapshot: ExcalidrawSnapshot | null = null
 
-            // 1. Try cloud (Pro plan)
             try {
                 snapshot = await fetchWhiteboardFromBackend(documentId)
             } catch (err) {
@@ -41,7 +39,6 @@ export default function TopicWhiteboard({ documentId }: Props) {
                 }
             }
 
-            // 2. Fallback to localStorage
             if (!snapshot) {
                 const saved = localStorage.getItem(`whiteboard-${documentId}`)
                 if (saved) {
@@ -71,12 +68,14 @@ export default function TopicWhiteboard({ documentId }: Props) {
     const handleChange = useCallback(
         (elements: any[], appState: any, files: any) => {
             if (debounceRef.current) clearTimeout(debounceRef.current)
+
             debounceRef.current = setTimeout(() => {
                 const snapshot: ExcalidrawSnapshot = {
                     elements,
                     appState: { viewBackgroundColor: appState.viewBackgroundColor },
                     files,
                 }
+
                 localStorage.setItem(
                     `whiteboard-${documentId}`,
                     JSON.stringify(snapshot)
@@ -92,41 +91,48 @@ export default function TopicWhiteboard({ documentId }: Props) {
         }
     }, [])
 
-    // Don't render Excalidraw at all until snapshot is loaded
+    // ✨ Premium Loader UI
     if (isLoading) {
         return (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-background/80">
-                <div className="w-8 h-8 border-4 border-muted border-t-foreground rounded-full animate-spin" />
-                <p className="mt-3 text-sm text-muted-foreground">Loading whiteboard...</p>
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white to-purple-50">
+                <div className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-white shadow-md border border-gray-100">
+                    <div className="w-10 h-10 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin" />
+                    <p className="text-sm text-gray-500 font-medium">
+                        Loading your whiteboard...
+                    </p>
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="w-full h-full">
-            <Excalidraw
-                initialData={
-                    initialData
-                        ? {
-                              elements: initialData.elements,
-                              appState: {
-                                  viewBackgroundColor:
-                                      initialData.appState?.viewBackgroundColor ?? "#ffffff",
-                              },
-                              files: initialData.files,
-                          }
-                        : null
-                }
-                onChange={(elements: any, appState: any, files: any) =>
-                    handleChange(elements, appState, files)
-                }
-                UIOptions={{
-                    canvasActions: {
-                        saveToActiveFile: false,
-                        loadScene: false,
-                    },
-                }}
-            />
+        <div className="w-full h-full bg-gradient-to-br from-white to-purple-50 p-2">
+            {/* Canvas Card */}
+            <div className="w-full h-full rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-white">
+                <Excalidraw
+                    initialData={
+                        initialData
+                            ? {
+                                  elements: initialData.elements,
+                                  appState: {
+                                      viewBackgroundColor:
+                                          initialData.appState?.viewBackgroundColor ?? "#ffffff",
+                                  },
+                                  files: initialData.files,
+                              }
+                            : null
+                    }
+                    onChange={(elements: any, appState: any, files: any) =>
+                        handleChange(elements, appState, files)
+                    }
+                    UIOptions={{
+                        canvasActions: {
+                            saveToActiveFile: false,
+                            loadScene: false,
+                        },
+                    }}
+                />
+            </div>
         </div>
     )
 }

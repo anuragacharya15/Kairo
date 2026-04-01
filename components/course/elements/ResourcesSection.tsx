@@ -1,7 +1,7 @@
 "use client";
 
 import { v4 as uuid } from "uuid";
-import { ExternalLink, Plus, Trash2 } from "lucide-react"; // Added Trash2
+import { ExternalLink, Plus, Trash2 } from "lucide-react";
 
 import { CourseSection } from "../CourseSection";
 import { EditableField } from "@/components/ui/EditableField";
@@ -61,35 +61,34 @@ export function ResourcesSection() {
       action={
         <Button
           size="sm"
-          variant="outline"
           onClick={addResource}
-          className="flex items-center gap-1"
+          className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white rounded-xl px-4 py-2 shadow-md shadow-purple-200 transition-all duration-200"
         >
           <Plus className="h-4 w-4" />
-          Add resource
+          Add Resource
         </Button>
       }
     >
       {resources.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
+        <div className="text-sm text-gray-400 bg-white border border-purple-100 rounded-xl p-4 text-center shadow-sm shadow-purple-50">
           No resources added yet.
-        </p>
+        </div>
       ) : (
-        <div className="flex flex-col divide-y divide-gray-200 dark:divide-gray-700">
+        <div className="flex flex-col gap-4">
           {resources.map(resource => (
             <div
               key={resource.id}
-              className="flex items-center justify-between py-2 px-2 rounded transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-900"
+              className="bg-white border border-purple-100 rounded-2xl p-4 shadow-sm shadow-purple-50 hover:shadow-md hover:scale-[1.01] transition-all duration-200 flex items-center justify-between gap-4"
             >
-              {/* ───── Fields ───── */}
-              <div className="flex flex-col gap-1 flex-1">
+              {/* LEFT */}
+              <div className="flex flex-col gap-2 flex-1">
+
                 {/* Title */}
                 <EditableField
                   value={resource.title}
                   onChange={v =>
                     updateResource(resource.id, { title: v })
                   }
-                  className="text-sm font-medium"
                 >
                   {({ value, onChange, onBlur }) => (
                     <Input
@@ -97,7 +96,7 @@ export function ResourcesSection() {
                       onChange={e => onChange(e.target.value)}
                       onBlur={onBlur}
                       placeholder="Resource title"
-                      className="border-none px-0 py-1 text-base focus:ring-0 focus:outline-none bg-transparent"
+                      className="border border-purple-100 rounded-xl px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-purple-100 focus:border-purple-300"
                     />
                   )}
                 </EditableField>
@@ -108,31 +107,33 @@ export function ResourcesSection() {
                   onChange={v =>
                     updateResource(resource.id, { url: v })
                   }
-                  className="text-xs text-muted-foreground"
                 >
                   {({ value, onChange, onBlur }) => (
                     <Input
                       value={value}
                       onChange={e => onChange(e.target.value)}
                       onBlur={onBlur}
-                      placeholder="https://"
-                      className="border-none px-0 py-1 text-sm focus:ring-0 focus:outline-none bg-transparent text-muted-foreground"
+                      placeholder="https://..."
+                      className="border border-purple-100 rounded-xl px-3 py-2 text-sm text-gray-500 focus:ring-2 focus:ring-purple-100 focus:border-purple-300"
                     />
                   )}
                 </EditableField>
+
               </div>
 
-              {/* ───── Actions ───── */}
-              <div className="flex items-center gap-3"> {/* increased gap */}
+              {/* RIGHT ACTIONS */}
+              <div className="flex items-center gap-3">
+
                 {resource.url && (
                   <a
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="p-2 rounded-xl border border-purple-100 bg-white hover:bg-purple-50 transition-all"
                   >
                     <ExternalLink
                       size={14}
-                      className="text-muted-foreground hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                      className="text-gray-400 hover:text-purple-600"
                     />
                   </a>
                 )}
@@ -141,9 +142,11 @@ export function ResourcesSection() {
                   size="icon"
                   variant="ghost"
                   onClick={() => deleteResource(resource.id)}
+                  className="rounded-xl hover:bg-red-50 transition-all"
                 >
-                  <Trash2 className="h-4 w-4 text-white-500 hover:text-white-600" />
+                  <Trash2 className="h-4 w-4 text-red-400 hover:text-red-600" />
                 </Button>
+
               </div>
             </div>
           ))}
