@@ -14,10 +14,10 @@ export function Navbar() {
           className="flex items-center gap-2.5 group"
         >
           <div className="h-7 w-7 rounded-xl bg-gradient-to-br from-purple-500 to-violet-500 shadow-sm shadow-purple-200 flex items-center justify-center">
-            <span className="text-white text-xs font-bold tracking-tight">B</span>
+            <span className="text-white text-xs font-bold tracking-tight">K</span>
           </div>
           <span className="font-semibold text-sm tracking-tight text-gray-800 group-hover:text-purple-600 transition-colors duration-200">
-            BEVENLEE
+            KAIRO
           </span>
         </Link>
 

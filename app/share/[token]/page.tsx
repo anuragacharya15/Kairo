@@ -2,6 +2,9 @@ import { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
 import { SharePreviewClient } from "@/components/course/share/SharePreviewClient"
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic'
+
 interface Props {
   params: Promise<{ token: string }>
 }
@@ -9,7 +12,10 @@ interface Props {
 async function getPreview(token: string) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/share/${token}`,
-    { next: { revalidate: 0 } }
+    { 
+      cache: 'no-store',
+      next: { revalidate: 0 } 
+    }
   )
   if (!res.ok) return null
   return res.json()
